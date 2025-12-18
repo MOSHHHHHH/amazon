@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פותח מוצרי אמזון גלובלי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .info-box {
+            background-color: #f0f9ff;
+            border-right: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-gray-800">
+    <div class="max-w-3xl mx-auto">
+        <div class="card p-6 md:p-8 mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">פותח מוצרי אמזון גלובלי</h1>
+            
+            <div class="mb-6">
+                <label for="urlInput" class="block text-sm font-medium text-gray-700 mb-2">הדבק קישור למוצר מאמזון:</label>
+                <input type="text" id="urlInput" placeholder="https://www.amazon.com/dp/B08N5KWB9H..." 
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none text-left" dir="ltr">
+                <p id="statusMsg" class="mt-2 text-sm text-red-500 hidden">לא הצלחנו לזהות מזהה מוצר (ASIN) בקישור הזה.</p>
+            </div>
+
+            <div class="mb-6">
+                <span class="block text-sm font-medium text-gray-700 mb-3 font-bold text-lg">בחר אתרים לפתיחה:</span>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="siteCheckboxes">
+                    <!-- Checkboxes will be generated here -->
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button id="openBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-6 rounded-lg transition-colors shadow-md text-lg">
+                    פתח מוצר באתרים שנבחרו
+                </button>
+                <div class="flex justify-between items-center px-1">
+                    <button id="selectAllBtn" class="text-sm text-blue-600 hover:underline">בחר הכל / בטל בחירה</button>
+                    <span id="selectedCount" class="text-xs text-gray-500">נבחרו: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- מדור מידע חשוב -->
+        <div class="card p-6 md:p-8">
+            <h2 class="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="box-shadow: 13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                מידע חשוב להזמנה לישראל
+            </h2>
+            
+            <div class="space-y-6">
+                <section>
+                    <h3 class="font-bold text-gray-700 border-b pb-1 mb-2">אתרי אמזון המובילים לשילוח ישיר:</h3>
+                    <ul class="list-disc list-inside space-y-2 text-sm text-gray-700 pr-2">
+                        <li><strong>Amazon.com (ארה"ב)</strong> – האתר המרכזי, כולל מבצעי משלוח חינם מעל $49 על מוצרים נבחרים.</li>
+                        <li><strong>Amazon.co.uk (בריטניה)</strong> – פופולרי מאוד בזכות התאמת מוצרי חשמל לישראל.</li>
+                        <li><strong>Amazon.de (גרמניה)</strong> – המקור העיקרי למשלוחים מאירופה, זמין גם באנגלית.</li>
+                        <li><strong>Amazon.fr (צרפת), Amazon.it (איטליה), Amazon.es (ספרד)</strong>.</li>
+                    </ul>
+                </section>
+
+                <section class="grid md:grid-cols-2 gap-4">
+                    <div class="info-box p-3 rounded">
+                        <h4 class="font-bold text-sm mb-1">🔍 זיהוי משלוח</h4>
+                        <p class="text-xs">ודאו שמופיע הכיתוב <strong>"Ships to Israel"</strong> בעמוד המוצר כדי להיות בטוחים.</p>
+                    </div>
+                    <div class="info-box p-3 rounded">
+                        <h4 class="font-bold text-sm mb-1">📦 משלוח חינם</h4>
+                        <p class="text-xs">קיים בעיקר באתר האמריקאי (.com) על פריטים המסומנים ב-<strong>"FREE Shipping to Israel"</strong>.</p>
+                    </div>
+                    <div class="info-box p-3 rounded">
+                        <h4 class="font-bold text-sm mb-1">⚡ חשמל ומתח</h4>
+                        <p class="text-xs">מוצרי ארה"ב דורשים ממיר מתח. מוצרי אירופה (גרמניה, בריטניה וכו') מתאימים למתח בישראל.</p>
+                    </div>
+                    <div class="info-box p-3 rounded">
+                        <h4 class="font-bold text-sm mb-1">✈️ אתרים נוספים</h4>
+                        <p class="text-xs">הוספנו אתרים ללא שילוח ישיר למקרה שאתם נוסעים ויוכלו לאסוף עבורכם את החבילה.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sites = [
+            { id: 'com', name: 'ארה"ב (.com)', url: 'https://www.amazon.com/dp/' },
+            { id: 'uk', name: 'בריטניה (.co.uk)', url: 'https://www.amazon.co.uk/dp/' },
+            { id: 'de', name: 'גרמניה (.de)', url: 'https://www.amazon.de/dp/' },
+            { id: 'fr', name: 'צרפת (.fr)', url: 'https://www.amazon.fr/dp/' },
+            { id: 'it', name: 'איטליה (.it)', url: 'https://www.amazon.it/dp/' },
+            { id: 'es', name: 'ספרד (.es)', url: 'https://www.amazon.es/dp/' },
+            { id: 'nl', name: 'הולנד (.nl)', url: 'https://www.amazon.nl/dp/' },
+            { id: 'ca', name: 'קנדה (.ca)', url: 'https://www.amazon.ca/dp/' },
+            { id: 'ae', name: 'אמירויות (.ae)', url: 'https://www.amazon.ae/dp/' },
+            { id: 'au', name: 'אוסטרליה (.com.au)', url: 'https://www.amazon.com.au/dp/' },
+            { id: 'jp', name: 'יפן (.co.jp)', url: 'https://www.amazon.co.jp/dp/' },
+            { id: 'mx', name: 'מקסיקו (.com.mx)', url: 'https://www.amazon.com.mx/dp/' }
+        ];
+
+        const container = document.getElementById('siteCheckboxes');
+        const urlInput = document.getElementById('urlInput');
+        const openBtn = document.getElementById('openBtn');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const selectedCountLabel = document.getElementById('selectedCount');
+
+        sites.forEach(site => {
+            const label = document.createElement('label');
+            label.className = 'flex items-center space-x-2 space-x-reverse cursor-pointer p-2 hover:bg-gray-100 rounded border border-transparent hover:border-gray-200 transition-all';
+            label.innerHTML = `
+                <input type="checkbox" value="${site.id}" checked class="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500 site-checkbox">
+                <span class="text-sm text-gray-700 pr-2 font-medium">${site.name}</span>
+            `;
+            container.appendChild(label);
+        });
+
+        function updateCount() {
+            const checked = container.querySelectorAll('input.site-checkbox:checked').length;
+            selectedCountLabel.textContent = `נבחרו: ${checked}`;
+        }
+
+        container.addEventListener('change', updateCount);
+        updateCount();
+
+        let allSelected = true;
+        selectAllBtn.addEventListener('click', () => {
+            const checkboxes = container.querySelectorAll('input.site-checkbox');
+            allSelected = !allSelected;
+            checkboxes.forEach(cb => cb.checked = allSelected);
+            updateCount();
+        });
+
+        function extractASIN(url) {
+            const regex = /(?:[/dp/]|$)([A-Z0-9]{10})(?:[/?&]|$)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        openBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            const asin = extractASIN(url);
+            if (!asin) {
+                statusMsg.classList.remove('hidden');
+                return;
+            } else {
+                statusMsg.classList.add('hidden');
+            }
+
+            const selectedIds = Array.from(container.querySelectorAll('input.site-checkbox:checked'))
+                                    .map(cb => cb.value);
+
+            if (selectedIds.length === 0) return;
+
+            selectedIds.forEach(id => {
+                const site = sites.find(s => s.id === id);
+                if (site) {
+                    window.open(site.url + asin, '_blank');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
