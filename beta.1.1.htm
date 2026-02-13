@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Global Linker - משופר</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; }
+        .card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .site-card { transition: all 0.2s ease; border: 1px solid #e5e7eb; }
+        .site-card:hover { border-color: #fbbf24; background-color: #fffbeb; }
+        input:checked + .site-label { color: #92400e; font-weight: 600; }
+    </style>
+</head>
+<body class="p-4 md:p-10 text-gray-800">
+    <div class="max-w-4xl mx-auto">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-black text-gray-900 mb-2">Amazon Global Linker 📦</h1>
+            <p class="text-gray-500">השוו מחירים וזמינות בכל אתרי אמזון בעולם בלחיצה אחת</p>
+        </header>
+
+        <div class="card p-6 md:p-8 shadow-xl mb-8">
+            <div class="mb-8">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">הדבק קישור למוצר:</label>
+                <div class="relative">
+                    <input type="text" id="urlInput" 
+                        placeholder="https://www.amazon.com/dp/B08N5KWB9H..." 
+                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400 outline-none transition-all text-left" dir="ltr">
+                </div>
+                <p id="statusMsg" class="mt-2 text-sm text-red-500 font-medium hidden">⚠️ לא הצלחנו לזהות מזהה מוצר (ASIN) בקישור הזה.</p>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex flex-wrap justify-between items-end mb-4 gap-4">
+                    <span class="text-lg font-bold text-gray-800">בחר אתרים להשוואה:</span>
+                    <div class="flex gap-3">
+                        <button id="selectDirectBtn" class="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full hover:bg-blue-100 border border-blue-200 transition-colors">שילוח ישיר לישראל בלבד</button>
+                        <button id="selectAllBtn" class="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full hover:bg-gray-100 border border-gray-200 transition-colors">בחר הכל / בטל</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="siteCheckboxes">
+                    </div>
+            </div>
+
+            <div class="space-y-4">
+                <button id="openBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-black py-5 px-6 rounded-2xl transition-all shadow-[0_4px_0_rgb(202,138,4)] active:translate-y-1 active:shadow-none text-xl">
+                    פתח מוצר באתרים שנבחרו
+                </button>
+                
+                <div class="flex items-center justify-center gap-2 text-red-600 bg-red-50 py-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p class="text-[11px] font-bold uppercase tracking-wider">יש לאשר פתיחת חלונות קופצים בדפדפן</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sites = [
+            { id: 'com', name: 'ארה"ב (.com)', url: 'amazon.com', direct: true },
+            { id: 'uk', name: 'בריטניה (.co.uk)', url: 'amazon.co.uk', direct: true },
+            { id: 'de', name: 'גרמניה (.de)', url: 'amazon.de', direct: true },
+            { id: 'fr', name: 'צרפת (.fr)', url: 'amazon.fr', direct: true },
+            { id: 'it', name: 'איטליה (.it)', url: 'amazon.it', direct: true },
+            { id: 'es', name: 'ספרד (.es)', url: 'amazon.es', direct: true },
+            { id: 'nl', name: 'הולנד (.nl)', url: 'amazon.nl', direct: false },
+            { id: 'ca', name: 'קנדה (.ca)', url: 'amazon.ca', direct: false },
+            { id: 'ae', name: 'אמירויות (.ae)', url: 'amazon.ae', direct: false },
+            { id: 'au', name: 'אוסטרליה (.com.au)', url: 'amazon.com.au', direct: false },
+            { id: 'jp', name: 'יפן (.co.jp)', url: 'amazon.co.jp', direct: false },
+            { id: 'mx', name: 'מקסיקו (.com.mx)', url: 'amazon.com.mx', direct: false }
+        ];
+
+        const container = document.getElementById('siteCheckboxes');
+        const urlInput = document.getElementById('urlInput');
+
+        // רינדור צ'קבוקסים
+        sites.forEach(site => {
+            const div = document.createElement('div');
+            div.className = 'site-card rounded-xl p-3 flex items-center gap-3 cursor-pointer';
+            div.innerHTML = `
+                <input type="checkbox" id="chk-${site.id}" value="${site.id}" ${site.direct ? 'checked' : ''} 
+                    data-direct="${site.direct}" class="w-5 h-5 accent-yellow-500 cursor-pointer site-checkbox">
+                <label for="chk-${site.id}" class="site-label text-sm cursor-pointer flex-1">${site.name}</label>
+            `;
+            div.onclick = (e) => { if(e.target.type !== 'checkbox') div.querySelector('input').click(); };
+            container.appendChild(div);
+        });
+
+        // פונקציית חילוץ מזהה מוצר וזיהוי דומיין מקור
+        function parseAmazonUrl(urlStr) {
+            try {
+                const url = new URL(urlStr.startsWith('http') ? urlStr : 'https://' + urlStr);
+                const asinMatch = url.pathname.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+                return {
+                    asin: asinMatch ? asinMatch[1] : null,
+                    hostname: url.hostname.replace('www.', '')
+                };
+            } catch (e) {
+                const manualMatch = urlStr.match(/(?:dp\/|product\/)([A-Z0-9]{10})/i);
+                return { asin: manualMatch ? manualMatch[1] : null, hostname: null };
+            }
+        }
+
+        // ניהול בחירות
+        let toggleState = true;
+        document.getElementById('selectAllBtn').addEventListener('click', () => {
+            const cbs = document.querySelectorAll('.site-checkbox');
+            toggleState = !toggleState;
+            cbs.forEach(cb => cb.checked = toggleState);
+        });
+
+        document.getElementById('selectDirectBtn').addEventListener('click', () => {
+            document.querySelectorAll('.site-checkbox').forEach(cb => {
+                cb.checked = cb.dataset.direct === 'true';
+            });
+        });
+
+        // פתיחת חלונות
+        document.getElementById('openBtn').addEventListener('click', () => {
+            const inputVal = urlInput.value.trim();
+            if (!inputVal) return;
+
+            const { asin, hostname } = parseAmazonUrl(inputVal);
+            
+            if (!asin) {
+                document.getElementById('statusMsg').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('statusMsg').classList.add('hidden');
+
+            const selectedSites = Array.from(document.querySelectorAll('.site-checkbox:checked'))
+                .map(cb => sites.find(s => s.id === cb.value));
+
+            selectedSites.forEach(site => {
+                // בדיקה אם זה אתר המקור - אם כן, מדלגים עליו
+                if (hostname && hostname.includes(site.url)) {
+                    console.log(`מדלג על ${site.url} כי זה אתר המקור`);
+                    return;
+                }
+                window.open(`https://www.${site.url}/dp/${asin}`, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
