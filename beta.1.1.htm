@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon Global Linker - משופר</title>
+    <title>Amazon Global Linker - גרסה משופרת</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; }
         .card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; }
         .site-card { transition: all 0.2s ease; border: 1px solid #e5e7eb; }
         .site-card:hover { border-color: #fbbf24; background-color: #fffbeb; }
+        .info-section { background-color: #f0f9ff; border-right: 4px solid #3b82f6; }
         input:checked + .site-label { color: #92400e; font-weight: 600; }
     </style>
 </head>
@@ -18,26 +19,24 @@
         
         <header class="text-center mb-10">
             <h1 class="text-3xl font-black text-gray-900 mb-2">Amazon Global Linker 📦</h1>
-            <p class="text-gray-500">השוו מחירים וזמינות בכל אתרי אמזון בעולם בלחיצה אחת</p>
+            <p class="text-gray-500">השוואת מחירים גלובלית חכמה עם זיהוי מקור אוטומטי</p>
         </header>
 
         <div class="card p-6 md:p-8 shadow-xl mb-8">
             <div class="mb-8">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">הדבק קישור למוצר:</label>
-                <div class="relative">
-                    <input type="text" id="urlInput" 
-                        placeholder="https://www.amazon.com/dp/B08N5KWB9H..." 
-                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400 outline-none transition-all text-left" dir="ltr">
-                </div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">הדבק קישור למוצר מאמזון:</label>
+                <input type="text" id="urlInput" 
+                    placeholder="https://www.amazon.com/dp/B08N5KWB9H..." 
+                    class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400 outline-none transition-all text-left" dir="ltr">
                 <p id="statusMsg" class="mt-2 text-sm text-red-500 font-medium hidden">⚠️ לא הצלחנו לזהות מזהה מוצר (ASIN) בקישור הזה.</p>
             </div>
 
-            <div class="mb-8">
+            <div class="mb-6">
                 <div class="flex flex-wrap justify-between items-end mb-4 gap-4">
-                    <span class="text-lg font-bold text-gray-800">בחר אתרים להשוואה:</span>
-                    <div class="flex gap-3">
-                        <button id="selectDirectBtn" class="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full hover:bg-blue-100 border border-blue-200 transition-colors">שילוח ישיר לישראל בלבד</button>
-                        <button id="selectAllBtn" class="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-full hover:bg-gray-100 border border-gray-200 transition-colors">בחר הכל / בטל</button>
+                    <span class="text-lg font-bold text-gray-800">בחר אתרי יעד:</span>
+                    <div class="flex gap-2">
+                        <button id="selectDirectBtn" class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">שילוח ישיר לישראל</button>
+                        <button id="selectAllBtn" class="text-xs bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-300 transition-colors">בחר הכל / בטל</button>
                     </div>
                 </div>
 
@@ -49,12 +48,50 @@
                 <button id="openBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-black py-5 px-6 rounded-2xl transition-all shadow-[0_4px_0_rgb(202,138,4)] active:translate-y-1 active:shadow-none text-xl">
                     פתח מוצר באתרים שנבחרו
                 </button>
-                
-                <div class="flex items-center justify-center gap-2 text-red-600 bg-red-50 py-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    <p class="text-[11px] font-bold uppercase tracking-wider">יש לאשר פתיחת חלונות קופצים בדפדפן</p>
+                <p class="text-[11px] text-center text-red-600 font-bold uppercase tracking-tighter">
+                    יש לאשר "חלונות קופצים" (Pop-ups) בדפדפן להפעלת הכלי
+                </p>
+            </div>
+        </div>
+
+        <div class="card p-6 md:p-8 shadow-sm border-t-4 border-t-blue-500">
+            <h2 class="text-xl font-bold text-blue-900 mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                מדריך להזמנה חכמה לישראל
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-700 border-b pb-1">🌍 אתרים עם שילוח ישיר</h3>
+                    <ul class="text-sm space-y-2">
+                        <li><strong>Amazon.com:</strong> משלוח חינם מעל $49 (פריטים נבחרים).</li>
+                        <li><strong>Amazon.co.uk:</strong> מעולה למוצרי חשמל (מתאים לישראל).</li>
+                        <li><strong>Amazon.de:</strong> המקור האירופי המרכזי (זמין באנגלית).</li>
+                        <li class="text-gray-500 text-xs italic">כולל גם את: צרפת (FR), איטליה (IT), וספרד (ES).</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="info-section p-3 rounded-lg">
+                        <h4 class="font-bold text-sm mb-1">🔍 זיהוי ומשלוח</h4>
+                        <p class="text-xs">חפשו <strong>"Ships to Israel"</strong> או <strong>"FREE Shipping to Israel"</strong> (באתר האמריקאי).</p>
+                    </div>
+                    <div class="info-section p-3 rounded-lg">
+                        <h4 class="font-bold text-sm mb-1">⚡ חשמל ומתח</h4>
+                        <p class="text-xs">אירופה/בריטניה מתאימים לישראל. מוצרי ארה"ב דורשים ממיר מתח (110V).</p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h4 class="font-bold text-sm mb-1 flex items-center gap-2">
+                        <span>🔑</span> חשבון משותף
+                    </h4>
+                    <p class="text-xs leading-relaxed text-gray-600">
+                        אין פורך בחשבון חדש. המייל והסיסמה שלכם עובדים בכל האתרים (למעט יפן). יש לבצע Login ראשוני בכל מדינה בנפרד.
+                        <span class="text-blue-600 font-medium">✈️ הוספנו אתרים ללא שילוח ישיר למקרה שתרצו לאסוף את החבילה בחו"ל.</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -85,14 +122,13 @@
             div.className = 'site-card rounded-xl p-3 flex items-center gap-3 cursor-pointer';
             div.innerHTML = `
                 <input type="checkbox" id="chk-${site.id}" value="${site.id}" ${site.direct ? 'checked' : ''} 
-                    data-direct="${site.direct}" class="w-5 h-5 accent-yellow-500 cursor-pointer site-checkbox">
+                    data-direct="${site.direct}" class="w-5 h-5 accent-blue-600 cursor-pointer site-checkbox">
                 <label for="chk-${site.id}" class="site-label text-sm cursor-pointer flex-1">${site.name}</label>
             `;
             div.onclick = (e) => { if(e.target.type !== 'checkbox') div.querySelector('input').click(); };
             container.appendChild(div);
         });
 
-        // פונקציית חילוץ מזהה מוצר וזיהוי דומיין מקור
         function parseAmazonUrl(urlStr) {
             try {
                 const url = new URL(urlStr.startsWith('http') ? urlStr : 'https://' + urlStr);
@@ -107,7 +143,6 @@
             }
         }
 
-        // ניהול בחירות
         let toggleState = true;
         document.getElementById('selectAllBtn').addEventListener('click', () => {
             const cbs = document.querySelectorAll('.site-checkbox');
@@ -121,7 +156,6 @@
             });
         });
 
-        // פתיחת חלונות
         document.getElementById('openBtn').addEventListener('click', () => {
             const inputVal = urlInput.value.trim();
             if (!inputVal) return;
@@ -138,11 +172,8 @@
                 .map(cb => sites.find(s => s.id === cb.value));
 
             selectedSites.forEach(site => {
-                // בדיקה אם זה אתר המקור - אם כן, מדלגים עליו
-                if (hostname && hostname.includes(site.url)) {
-                    console.log(`מדלג על ${site.url} כי זה אתר המקור`);
-                    return;
-                }
+                // המערכת מזהה את המקור ולא פותחת אותו שוב
+                if (hostname && hostname.includes(site.url)) return;
                 window.open(`https://www.${site.url}/dp/${asin}`, '_blank');
             });
         });
